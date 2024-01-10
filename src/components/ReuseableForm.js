@@ -22,15 +22,15 @@ function ReuseableForm(props) {
           placeholder="Describe your issue"
           required />
         <br />
-        <label htmlFor="urgency">Urgency: </label>
-        <input
-          type="number"
-          name="urgency"
-          min="1"
-          max="10"
-          defaultValue="1"
-          placeholder="urgency"
-          required />
+        <label>Urgency:
+          <input
+            type="number"
+            name="urgency"
+            min="1"
+            max="10"
+            defaultValue="1"
+            required />
+         </label>
         <br />
         <button type="submit">{props.buttonText}</button>
       </form>

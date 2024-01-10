@@ -38,14 +38,15 @@ function EditTicketForm(props) {
           placeholder="Describe your issue"
           required />
         <br />
-        <label htmlFor="urgency">Urgency: </label>
-        <input
-          type="number"
-          name="urgency"
-          min="1"
-          max="10"
-          defaultValue={ticket.urgency}
-          required />
+        <label>Urgency: 
+          <input
+            type="number"
+            name="urgency"
+            min="1"
+            max="10"
+            defaultValue={ticket.urgency}
+            required />
+        </label>
         <br />
         <button type="submit">Update Ticket</button>
       </form>
