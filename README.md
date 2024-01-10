@@ -8,7 +8,7 @@ This is a demo repository of the Help Queue application we build during the Reac
   * Node Package Manager (npm)
 
 ### Command Line Setup and Installation:
-* Clone project:  `$ git clone https://github.com/RyanDuff613/demo-help-queue.git`
+* Clone project:  `$ git clone https://github.com/temporaryRyan/demo-help-queue.git`
 * Navigate to project directory:  `$ cd demo-help-queue`
 * Install project dependencies: `$ npm install`
 * Run server: `$ npm run start`
