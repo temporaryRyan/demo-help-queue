@@ -22,7 +22,6 @@ function NewTicketForm(props) {
     //   urgency: parseInt(event.target.urgency.value),
     //   id: v4()
     // }
-    // console.log(newTicket)
     // props.onNewTicketCreation(newTicket);
   }
 

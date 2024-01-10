@@ -10,10 +10,8 @@ function Ticket(props) {
   return (
     <>
       <div style={ticketStyles}
-        onClick={() => props.whenTicketClicked(props.id)}>
-        {/* <h3>{props.location}</h3> */}
+           onClick={() => props.whenTicketClicked(props.id)}>
         <h3>{props.names}</h3>
-        {/* <p><em>{props.issue}</em></p> */}
         <p>urgency: {props.urgency}</p>
         <hr />
       </div>
