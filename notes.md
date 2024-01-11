@@ -1,8 +1,3 @@
-
-
-
-
-
 # REACT FUNDAMENTALS NOTES:
 
 ### REACT COMPONENTS:
@@ -63,42 +58,134 @@
       - `render()` - Class components must always include a render() method. This method will return any JSX content that React should add to its virtual DOM.
 
       #### State in Class Components:
-      - Whenever we want to change state in React, we need to use the `setState()` method. 
-      - `setState()` takes an object as an argument. The object provided as an argument contains a key-value pair describing which slice of state should be updated and with what value.
-        ```javascript
-        this.setState({property: update})
-        ```
-      - Calling `setState()` updates the state value and triggers a re-render of the component that contains the state slice.
-      - Don' do this!
-        ```javascript
-        this.state.property = "new value";
-        ```
-      - Most of the time we'll pass an object as an argument to `setState()`. Alternatively, you can also pass an arrow function as an argumenet to `setState()`. The arrow function passed as an argument takes the current `state` and props as arguments. In the Help Queue we do this when we create the `handleClick()` method that we add as a click handler to the button for toggling between the TicketList and NewTicketForm components. This is useful in this case since we want to know whether `formVisibleOnPage` is either true or false so that we can change it to the opposite value when the user clicks a button:
+      - State is data in an application that we need to store and change. 
+      - Only class components can contain `state`. 
+      - We should only define a component as a class if it absolutely requires state. If a component does not require state, it should instead be a function component.
+      - Class components have a constructor that looks like this:
 
         ```javascript
-        handleClick = () => {
-          this.setState(prevState => ({
-            formVisibleOnPage: !prevState.formVisibleOnPage
-          }));
+        constructor(props) {
+          super(props);
+          this.state = {}; // this is the only place we should define state in a pure React application
+                           // it's just a regular Javascript object and can contain as many key-value pairs as you wish. 
+                           // 
         }
         ```
-      - Methods for altering state should always be arrow functions because they preserve the meaning of `this` within the scope in which they're created (a concept called binding).
-        - Do this:
-          ```javascript
-          handleClick = () => {
-            this.setState(prevState => ({
-              formVisibleOnPage: !prevState.formVisibleOnPage
-            }));
-          }
-          ```
-        - Don't do this:
-          ```javascript
-          handleClick(){
-            this.setState(prevState => ({
-              formVisibleOnPage: !prevState.formVisibleOnPage
-            }));
-          }
-          ```
+
+        #### Making changes to state with setState()
+        - THIS IS VERY IMPORTANT: Whenever we want to change state in a class component, we need to use the `setState()` method provided by React. Calling `setState()` updates the state value and triggers a re-render of the component that contains the state slice. If you mutate state directly (without using the `setState()` method) the component will not rerender, the app will appear unchanged despite the fact that something in `state` has changed. This will cause errors and be difficult to debug. 
+
+        - `setState()` can take either an object or a function as an argument, most of the time you'll provide an object. The object provided as an argument contains a key-value pair describing which slice of state should be updated and with what value.
+          - When you need to make a change to `state` do this:
+            ```javascript
+            this.setState({property: update})
+            ```
+          - Don' do this!
+            ```javascript
+            this.state.property = "new value";
+            ```
+          - When a child component needs to alter a value of state that lives in it's parent, the parent component needs a method for making the state change and it needs to pass the method to the child component via `props`. Here's the simplest example of this from the Help Queue:
+            <details><summary><code>In TicketControl.js</code></summary>
+
+            ```javascript
+            ...
+
+            // this method handles setting the value of this.state.editing to "true"
+            
+            handleEditClick = () => {
+              this.setState({ editing: true });
+            }
+
+            ...
+
+            // when TicketControl renders the TicketDetail component it passes 
+            // handleEditClick as a prop called onClickingEdit
+            
+            currentlyVisibleState = <TicketDetail ticket={this.state.selectedTicket}
+                                          onClickingDelete={this.handleDeletingTicket}
+                                          onClickingEdit={this.handleEditClick} />
+            ...
+            ```
+            </details>
+
+            <details><summary><code>In TicketDetail.js</code></summary>
+
+            ```javascript
+            ...
+            return (
+              <>
+                <h3>{ticket.location}</h3>
+                <h3>{ticket.names}</h3>
+                <p><em>{ticket.issue}</em></p>
+                <br />
+                    // when the "Edit Ticket" button is clicked, it will 
+                    // call the prop onClickingEdit(ticket.id)
+                    // This calls handleEditClick(ticket.id) in TicketControl
+                <button onClick={() => props.onClickingEdit(ticket.id)}>Edit Ticket</button>
+                <button onClick={() => props.onClickingDelete(ticket.id)}>Close Ticket</button>
+                <br />
+              </>
+            )
+            ...
+            ```
+            </details>
+          - Methods for altering state should always be arrow functions because they preserve the meaning of `this` within the scope in which they're created (a concept called binding).
+            - Do this:
+
+              ```javascript
+              // handleClick() is an arrow function.
+              handleClick = () => {
+                this.setState(prevState => ({
+                  formVisibleOnPage: !prevState.formVisibleOnPage
+                }));
+              }
+              ```
+            - Don't do this:
+
+              ```javascript
+              handleClick(){
+                this.setState(prevState => ({
+                  formVisibleOnPage: !prevState.formVisibleOnPage
+                }));
+              }
+              ```
+          -  Alternatively, you can also pass an arrow function as an argument to `setState()`. The arrow function passed as an argument takes the current `state` and `props` as arguments. This is useful when you need to know a current value within `state` before making a change. In the Help Queue we have an example of this with the `handleClick()` method. Within it, `setState()` is given an arrow function as an argument The arrow function takes `prevState` as an argument and returns an object that defines the change we want to make to `state`. In effect, this code is saying: "set the value of `formVisibleOnPage` to the opposite of what is was previously".  
+
+            <details><summary><code>Example From TicketControl.js</code></summary>
+
+            ```javascript
+              ...
+              // when called, this function sets the value of formVisibleOnPage (a boolean) 
+              // to the opposite of it's current value.
+              handleClick = () => {
+                this.setState(prevState => ({
+                  formVisibleOnPage: !prevState.formVisibleOnPage
+                }));
+              }
+              ...
+            ```
+            </details>
+
+        - Methods for altering state should always be arrow functions because they preserve the meaning of `this` within the scope in which they're created (a concept called binding).
+          - Do this:
+
+            ```javascript
+            // handleClick() is an arrow function.
+            handleClick = () => {
+              this.setState(prevState => ({
+                formVisibleOnPage: !prevState.formVisibleOnPage
+              }));
+            }
+            ```
+          - Don't do this:
+
+            ```javascript
+            handleClick(){
+              this.setState(prevState => ({
+                formVisibleOnPage: !prevState.formVisibleOnPage
+              }));
+            }
+            ```
     
 
 ### JSX:
